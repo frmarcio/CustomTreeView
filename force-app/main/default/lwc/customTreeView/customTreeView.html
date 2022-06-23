@@ -1,0 +1,80 @@
+<template>
+    
+    <div class="slds-tree_container slds-is-relative slds-card">
+        <template if:true={isloading}  >
+            <lightning-spinner alternative-text="Loading" size="small" variant="brand" ></lightning-spinner>
+        </template>
+
+        <ul  class={customclass} role={customrole}>  
+            <template for:each={allitems} for:item="i">
+                <li aria-expanded={i.expanded} aria-level={ariallevel} role="treeitem" key={i}>
+                    <div class="slds-tree__item">                        
+                        <template if:true={canExpand}>
+                            <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand item" data-item = {i.Id} onclick={handlelevel}>
+                                <svg class="slds-button__icon slds-button__icon_small" aria-hidden="true">
+                                <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#chevronright"></use>
+                                </svg>                                
+                            </button>                
+                        </template>
+                        <span class="slds-has-flexi-truncate">
+                            <template if:true={i.showCheckbox}>
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <div  draggable={i.isdraggable}  class="slds-checkbox slds-tree__item-label slds-truncate " data-item = {i.Id}  ondragstart={handleDragStart} > 
+                                            <input type="checkbox" id={i.value} value={i.value} data-item = {i.Id} onchange={handlepickvalue} />
+                                            <label class="slds-checkbox__label" for={i.value}>
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label">{i.value}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={i.showCheckbox}>
+                                <div  draggable={i.isdraggable} data-item = {i.Id}  ondragstart={handleDragStart} > 
+                                    <span class="slds-tree__item-label slds-truncate slds-checkbox" title={i.value}>{i.value}</span>
+                                </div>
+                            </template>
+                        </span>
+                    </div>
+ 
+                    <template if:true={i.expanded}>
+                        <c-custom-tree-view deserialized-soqls = {deserializedSoqls} soqls = {soqls} customclass="" customrole="group" ariallevel = {nextlevel} ondismitchitem={handledismitchItem} parent-filter={currentFilter}></c-custom-tree-view>
+                    </template>
+                    
+                </li>
+            </template>
+        </ul>
+    </div>
+   
+</template>
+
+<!--
+
+
+
+
+[
+	{
+		"soql": "select Id, name, parentroleid from userrole  where parentroleid =null",
+		"pickupfields": "Id",
+		"sendpickupfieldsAs": "parentroleid",
+		"displayfields": "name",
+		"showCheckbox": false,
+		"canExpand": true,
+		"distinctValues": true
+	},
+	{
+		"soql": "select Id, name, parentroleid from userrole  where @filter ",
+		"pickupfields": "Id",
+		"sendpickupfieldsAs": "parentroleid",
+		"displayfields": "name",
+		"showCheckbox": false,
+		"canExpand": true,
+		"distinctValues": false,
+		"recursive": true
+	}    
+]
+
+
+-->
